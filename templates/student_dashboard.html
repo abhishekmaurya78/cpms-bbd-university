@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Dashboard - CPMS{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+    <div>
+        <h2 class="fw-extrabold text-white mb-1">
+            <i class="fa-solid fa-user-graduate text-indigo me-2"></i> Welcome, {{ current_user.name }}
+        </h2>
+        <p class="text-muted small mb-0">Track your application status, check drive eligibility, and apply to hiring partners.</p>
+    </div>
+    <a href="{{ url_for('jobs') }}" class="btn btn-primary-custom">
+        <i class="fa-solid fa-magnifying-glass me-1"></i> Browse All Drives
+    </a>
+</div>
+
+<!-- Profile & Stats Section -->
+<div class="row g-4 mb-4">
+    <!-- Student Academic Summary Card -->
+    <div class="col-lg-4">
+        <div class="glass-card h-100 p-4">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="stat-icon-wrapper stat-icon-indigo" style="width: 52px; height: 52px; font-size: 1.5rem;">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold text-white mb-0">{{ student.user.name if student else current_user.name }}</h5>
+                    <span class="text-indigo font-monospace small">Roll: {{ student.roll_no if student else 'N/A' }}</span>
+                </div>
+            </div>
+
+            <hr class="border-secondary border-opacity-25 my-3">
+
+            <div class="d-flex flex-column gap-2.5 small">
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Branch:</span>
+                    <strong class="text-white">{{ student.branch if student else 'N/A' }}</strong>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">CGPA:</span>
+                    <strong class="badge bg-success bg-opacity-25 text-success fs-6">{{ student.cgpa if student else '0.0' }}</strong>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Graduation Year:</span>
+                    <strong class="text-white">{{ student.passing_year if student else '2028' }}</strong>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Email / Phone:</span>
+                    <strong class="text-white">{{ current_user.email }}</strong>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <span class="form-label-custom d-block mb-1">Registered Skills:</span>
+                <p class="text-muted small mb-3 bg-dark bg-opacity-40 p-2.5 rounded-3 border border-secondary border-opacity-25">
+                    {{ student.skills if student and student.skills else 'No skills added yet' }}
+                </p>
+
+                {% if student and student.resume_url %}
+                    <a href="{{ student.resume_url }}" target="_blank" class="btn btn-secondary-custom btn-sm w-100 justify-content-center">
+                        <i class="fa-solid fa-file-pdf text-danger me-1"></i> View Resume PDF
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats & Eligible Drives -->
+    <div class="col-lg-8">
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="glass-card stat-card p-3">
+                    <div class="stat-icon-wrapper stat-icon-cyan">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </div>
+                    <div>
+                        <div class="stat-number">{{ applications | length }}</div>
+                        <div class="stat-label">Applications</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card stat-card p-3">
+                    <div class="stat-icon-wrapper stat-icon-amber">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <div>
+                        <div class="stat-number">{{ shortlisted_count }}</div>
+                        <div class="stat-label">Shortlisted</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card stat-card p-3">
+                    <div class="stat-icon-wrapper stat-icon-green">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <div>
+                        <div class="stat-number">{{ selected_count }}</div>
+                        <div class="stat-label">Placed Offers</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Eligible Placement Drives -->
+        <div class="glass-card p-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h5 class="fw-bold text-white mb-0"><i class="fa-solid fa-bolt text-warning me-2"></i> Eligible Placement Opportunities</h5>
+                <span class="badge bg-indigo-subtle text-indigo">{{ eligible_jobs | length }} Drives Available</span>
+            </div>
+
+            <div class="d-flex flex-column gap-3">
+                {% for job in eligible_jobs %}
+                    <div class="p-3.5 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25 d-flex flex-wrap align-items-center justify-content-between gap-3">
+                        <div>
+                            <strong class="text-white fs-6 d-block">{{ job.title }}</strong>
+                            <div class="text-muted small d-flex flex-wrap gap-3 mt-1">
+                                <span><i class="fa-solid fa-building text-cyan me-1"></i> {{ job.company.company_name }}</span>
+                                <span><i class="fa-solid fa-money-bill-wave text-success me-1"></i> {{ job.salary_package }}</span>
+                                <span><i class="fa-solid fa-location-dot me-1"></i> {{ job.location }}</span>
+                                <span><i class="fa-solid fa-calendar me-1"></i> Deadline: {{ job.deadline }}</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            {% if job.id in applied_jobs_ids %}
+                                <span class="badge-status badge-applied"><i class="fa-solid fa-check"></i> Already Applied</span>
+                            {% else %}
+                                <form action="{{ url_for('apply_job', job_id=job.id) }}" method="POST">
+                                    <button type="submit" class="btn btn-sm btn-primary-custom">
+                                        <i class="fa-solid fa-paper-plane me-1"></i> Apply Now
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center py-3">No eligible active jobs found matching your CGPA currently.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- My Applications Status Feed -->
+<div class="glass-card p-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h5 class="fw-bold text-white mb-0"><i class="fa-solid fa-clock-rotate-left text-indigo me-2"></i> My Application Submissions</h5>
+        <a href="{{ url_for('my_applications') }}" class="btn btn-sm btn-outline-custom">View Full History</a>
+    </div>
+
+    <div class="custom-table-container">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Job Title</th>
+                    <th>Company</th>
+                    <th>Salary</th>
+                    <th>Applied Date</th>
+                    <th>Status</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in applications %}
+                    <tr>
+                        <td><strong class="text-white">{{ app.job.title }}</strong></td>
+                        <td class="text-muted"><i class="fa-solid fa-building me-1"></i> {{ app.job.company.company_name }}</td>
+                        <td><span class="badge bg-success bg-opacity-25 text-success">{{ app.job.salary_package }}</span></td>
+                        <td class="text-muted small">{{ app.applied_at.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            {% if app.status == 'Selected' %}
+                                <span class="badge-status badge-selected"><i class="fa-solid fa-circle-check"></i> Selected</span>
+                            {% elif app.status == 'Shortlisted' %}
+                                <span class="badge-status badge-shortlisted"><i class="fa-solid fa-clock"></i> Shortlisted</span>
+                            {% elif app.status == 'Rejected' %}
+                                <span class="badge-status badge-rejected"><i class="fa-solid fa-xmark-circle"></i> Rejected</span>
+                            {% else %}
+                                <span class="badge-status badge-applied"><i class="fa-solid fa-paper-plane"></i> Applied</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-muted small">{{ app.remarks or 'N/A' }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">You have not submitted any applications yet.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Registered Students Directory - CPMS Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+    <div>
+        <h2 class="fw-extrabold text-white mb-1">
+            <i class="fa-solid fa-users-gear text-indigo me-2"></i> Student Directory
+        </h2>
+        <p class="text-muted small mb-0">View all registered student candidates, academic profiles, skills, and resume links.</p>
+    </div>
+    <div class="w-auto">
+        <input type="text" id="tableSearchInput" class="form-control form-control-custom" placeholder="Search by name, branch, roll no..." style="min-width: 280px;">
+    </div>
+</div>
+
+<div class="glass-card p-4">
+    <div class="custom-table-container">
+        <table class="custom-table searchable-table">
+            <thead>
+                <tr>
+                    <th>Roll No</th>
+                    <th>Student Name</th>
+                    <th>Branch</th>
+                    <th>CGPA</th>
+                    <th>Passing Year</th>
+                    <th>Contact Info</th>
+                    <th>Skills</th>
+                    <th>Resume</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                    <tr>
+                        <td><span class="font-monospace text-indigo fw-bold">{{ student.roll_no }}</span></td>
+                        <td>
+                            <strong class="text-white d-block">{{ student.user.name }}</strong>
+                            <small class="text-muted">Applications: {{ student.applications | length }}</small>
+                        </td>
+                        <td><span class="badge bg-secondary bg-opacity-25 text-light">{{ student.branch }}</span></td>
+                        <td>
+                            <span class="fw-bold {% if student.cgpa >= 8.5 %}text-success{% elif student.cgpa >= 7.5 %}text-info{% else %}text-warning{% endif %}">
+                                {{ student.cgpa }}
+                            </span>
+                        </td>
+                        <td>{{ student.passing_year }}</td>
+                        <td>
+                            <div class="small">
+                                <div><i class="fa-solid fa-envelope text-muted me-1"></i> {{ student.user.email }}</div>
+                                <div><i class="fa-solid fa-phone text-muted me-1"></i> {{ student.user.phone or 'N/A' }}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="small text-muted d-inline-block text-truncate" style="max-width: 180px;" title="{{ student.skills }}">
+                                {{ student.skills or 'N/A' }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if student.resume_url %}
+                                <a href="{{ student.resume_url }}" target="_blank" class="btn btn-sm btn-outline-custom">
+                                    <i class="fa-solid fa-file-pdf text-danger me-1"></i> Resume
+                                </a>
+                            {% else %}
+                                <span class="text-muted small">No Resume</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">No registered students found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

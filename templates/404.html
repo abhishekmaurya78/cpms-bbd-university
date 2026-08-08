@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}404 - Page Not Found | BBD Placement Cell{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center" style="max-width: 650px;">
+    <div class="glass-card p-5 animate-fade-in">
+        <div class="mb-4">
+            <span class="display-1 fw-bold text-indigo">404</span>
+            <div class="fs-4 text-white mt-2 fw-semibold">Page Not Found</div>
+        </div>
+        <p class="text-muted mb-4">
+            Oops! The page or resource you are looking for does not exist or has been moved.
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{{ url_for('index') }}" class="btn btn-primary-custom">
+                <i class="fa-solid fa-house me-1"></i> Back to Homepage
+            </a>
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('redirect_by_role_route', role=current_user.role) }}" class="btn btn-secondary-custom">
+                <i class="fa-solid fa-gauge me-1"></i> Go to My Dashboard
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

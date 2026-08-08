@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Post New Job Listing - CPMS{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-4">
+    <div class="col-lg-8">
+        <div class="glass-card p-4 p-md-5">
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <span class="navbar-brand-icon" style="width: 44px; height: 44px; font-size: 1.2rem;">
+                    <i class="fa-solid fa-plus-circle"></i>
+                </span>
+                <div>
+                    <h3 class="fw-bold text-white mb-0">Publish Recruitment Drive</h3>
+                    <p class="text-muted small mb-0">Specify role details, salary package, location, and minimum eligibility criteria.</p>
+                </div>
+            </div>
+
+            <form action="{{ url_for('post_job') }}" method="POST">
+                <div class="row g-3 mb-4">
+                    <div class="col-md-8">
+                        <label for="title" class="form-label form-label-custom">Job Title / Designation</label>
+                        <input type="text" class="form-control form-control-custom" id="title" name="title" placeholder="e.g. Software Development Engineer (SDE-1)" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="salary_package" class="form-label form-label-custom">Salary Package (LPA)</label>
+                        <input type="text" class="form-control form-control-custom" id="salary_package" name="salary_package" placeholder="e.g. 12 LPA" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="min_cgpa" class="form-label form-label-custom">Minimum Cut-Off CGPA</label>
+                        <input type="number" step="0.1" min="0" max="10" class="form-control form-control-custom" id="min_cgpa" name="min_cgpa" value="7.0" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="location" class="form-label form-label-custom">Work Location</label>
+                        <input type="text" class="form-control form-control-custom" id="location" name="location" placeholder="e.g. Noida / Remote" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="deadline" class="form-label form-label-custom">Application Deadline</label>
+                        <input type="date" class="form-control form-control-custom" id="deadline" name="deadline" value="2026-09-30" required>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="role_description" class="form-label form-label-custom">Role Description & Key Responsibilities</label>
+                        <textarea class="form-control form-control-custom" id="role_description" name="role_description" rows="4" placeholder="Describe core job responsibilities, project expectations, and team structure..." required></textarea>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="requirements" class="form-label form-label-custom">Candidate Requirements & Technical Prerequisites</label>
+                        <textarea class="form-control form-control-custom" id="requirements" name="requirements" rows="3" placeholder="e.g. Proficiency in Python, SQL, REST APIs, Git, Problem Solving..." required></textarea>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-3">
+                    <a href="{{ url_for('company_dashboard') if current_user.role == 'company' else url_for('admin_jobs') }}" class="btn btn-secondary-custom px-4">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary-custom px-4">
+                        <i class="fa-solid fa-paper-plane me-2"></i> Publish Job Listing
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

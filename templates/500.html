@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}500 - Server Error | BBD Placement Cell{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center" style="max-width: 650px;">
+    <div class="glass-card p-5 animate-fade-in">
+        <div class="mb-4">
+            <span class="display-1 fw-bold text-danger">500</span>
+            <div class="fs-4 text-white mt-2 fw-semibold">Internal Server Error</div>
+        </div>
+        <p class="text-muted mb-4">
+            Something unexpected occurred on the server. Please try refreshing the page or try again later.
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{{ url_for('index') }}" class="btn btn-primary-custom">
+                <i class="fa-solid fa-house me-1"></i> Back to Homepage
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

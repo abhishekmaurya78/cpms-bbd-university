@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign In - CPMS Portal{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-4">
+    <div class="col-lg-10">
+        <div class="glass-card p-0 overflow-hidden">
+            <div class="row g-0">
+                <!-- Left Form Column -->
+                <div class="col-lg-6 p-4 p-md-5">
+                    <div class="d-flex align-items-center gap-2 mb-4">
+                        <span class="navbar-brand-icon" style="width: 32px; height: 32px; font-size: 0.9rem;">
+                            <i class="fa-solid fa-lock"></i>
+                        </span>
+                        <h3 class="fw-bold text-white mb-0">Sign In to CPMS</h3>
+                    </div>
+                    <p class="text-muted small mb-4">Select your role or enter credentials to log into your dashboard.</p>
+
+                    <form action="{{ url_for('login') }}" method="POST">
+                        <div class="mb-3">
+                            <label for="login-email" class="form-label form-label-custom">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary text-muted"><i class="fa-solid fa-envelope"></i></span>
+                                <input type="email" class="form-control form-control-custom" id="login-email" name="email" placeholder="name@example.com" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="login-password" class="form-label form-label-custom">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary text-muted"><i class="fa-solid fa-key"></i></span>
+                                <input type="password" class="form-control form-control-custom" id="login-password" name="password" placeholder="Enter password" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary-custom w-100 py-2.5 fs-6 justify-content-center mb-3">
+                            <i class="fa-solid fa-right-to-bracket me-2"></i> Log In
+                        </button>
+
+                        <div class="text-center mb-3">
+                            <a href="{{ url_for('forgot_password') }}" class="text-muted small text-decoration-none">
+                                <i class="fa-solid fa-key me-1"></i> Forgot Password?
+                            </a>
+                        </div>
+                    </form>
+
+                    <div class="text-center text-muted small mt-3">
+                        Don't have an account? <a href="{{ url_for('register') }}" class="text-indigo text-decoration-none fw-semibold">Register here</a>
+                    </div>
+                </div>
+
+                <!-- Right Quick Demo Login Helper Column -->
+                <div class="col-lg-6 bg-dark bg-opacity-40 p-4 p-md-5 border-start border-secondary border-opacity-25">
+                    <h5 class="fw-bold text-white mb-3 d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-bolt text-warning"></i> Quick Demo Login
+                    </h5>
+                    <p class="text-muted small mb-3">Click any persona below to auto-fill exact credentials for testing:</p>
+
+                    <div class="d-flex flex-column gap-2">
+                        <!-- Admin -->
+                        <div class="demo-pill" onclick="fillLogin('abhishekmaurya53957@gmail.com', 'Abhishek@1234')">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong class="text-white d-block"><i class="fa-solid fa-user-shield text-danger me-2"></i>Admin (Placement Officer)</strong>
+                                    <span class="text-muted small">abhishekmaurya53957@gmail.com</span>
+                                </div>
+                                <span class="badge bg-danger bg-opacity-25 text-danger border border-danger border-opacity-25">Select</span>
+                            </div>
+                        </div>
+
+                        <!-- Primary Student -->
+                        <div class="demo-pill" onclick="fillLogin('student@test.com', 'Aman@1234')">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong class="text-white d-block"><i class="fa-solid fa-graduation-cap text-info me-2"></i>Student (Aman Deep)</strong>
+                                    <span class="text-muted small">student@test.com</span>
+                                </div>
+                                <span class="badge bg-info bg-opacity-25 text-info border border-info border-opacity-25">Select</span>
+                            </div>
+                        </div>
+
+                        <!-- Company -->
+                        <div class="demo-pill" onclick="fillLogin('company@test.com', 'company1234')">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong class="text-white d-block"><i class="fa-solid fa-building text-warning me-2"></i>Company (TechCorp)</strong>
+                                    <span class="text-muted small">company@test.com</span>
+                                </div>
+                                <span class="badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-25">Select</span>
+                            </div>
+                        </div>
+
+                        <!-- Demo Students Dropdown/Pills -->
+                        <div class="accordion accordion-flush mt-1" id="demoStudentsAccordion">
+                            <div class="accordion-item bg-transparent border-0">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed bg-dark bg-opacity-50 text-muted p-2 rounded-3 border border-secondary border-opacity-25 small" type="button" data-bs-toggle="collapse" data-bs-target="#collapseStudents">
+                                        <i class="fa-solid fa-users me-2 text-indigo"></i> More Demo Students (Priya, Rohit, Sneha, Vikram)
+                                    </button>
+                                </h2>
+                                <div id="collapseStudents" class="accordion-collapse collapse" data-bs-parent="#demoStudentsAccordion">
+                                    <div class="accordion-body p-0 pt-2 d-flex flex-column gap-2">
+                                        <div class="demo-pill py-2" onclick="fillLogin('priya.singh@test.com', 'Student@1234')">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-white">Priya Singh (CS/IT)</small>
+                                                <small class="text-muted">priya.singh@test.com</small>
+                                            </div>
+                                        </div>
+                                        <div class="demo-pill py-2" onclick="fillLogin('rohit.verma@test.com', 'Student@1234')">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-white">Rohit Verma (Mechanical)</small>
+                                                <small class="text-muted">rohit.verma@test.com</small>
+                                            </div>
+                                        </div>
+                                        <div class="demo-pill py-2" onclick="fillLogin('sneha.gupta@test.com', 'Student@1234')">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-white">Sneha Gupta (ECE)</small>
+                                                <small class="text-muted">sneha.gupta@test.com</small>
+                                            </div>
+                                        </div>
+                                        <div class="demo-pill py-2" onclick="fillLogin('vikram.aditya@test.com', 'Student@1234')">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-white">Vikram Aditya (Civil)</small>
+                                                <small class="text-muted">vikram.aditya@test.com</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

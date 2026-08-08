@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Job Listings - CPMS Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+    <div>
+        <h2 class="fw-extrabold text-white mb-1">
+            <i class="fa-solid fa-list-check text-indigo me-2"></i> Placement Job Drives
+        </h2>
+        <p class="text-muted small mb-0">Manage active & closed corporate recruitment drives across all branches.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <input type="text" id="tableSearchInput" class="form-control form-control-custom me-2" placeholder="Search job title, company..." style="min-width: 240px;">
+        <a href="{{ url_for('post_job') }}" class="btn btn-primary-custom text-nowrap">
+            <i class="fa-solid fa-plus me-1"></i> Post Job
+        </a>
+    </div>
+</div>
+
+<div class="glass-card p-4">
+    <div class="custom-table-container">
+        <table class="custom-table searchable-table">
+            <thead>
+                <tr>
+                    <th>Job Title & Company</th>
+                    <th>Salary Package</th>
+                    <th>Location</th>
+                    <th>Min CGPA</th>
+                    <th>Deadline</th>
+                    <th>Applicants</th>
+                    <th>Drive Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in jobs %}
+                    <tr>
+                        <td>
+                            <strong class="text-white d-block">{{ job.title }}</strong>
+                            <span class="text-muted small"><i class="fa-solid fa-building me-1"></i> {{ job.company.company_name }}</span>
+                        </td>
+                        <td><span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 fw-bold">{{ job.salary_package }}</span></td>
+                        <td class="text-muted small"><i class="fa-solid fa-location-dot me-1"></i> {{ job.location }}</td>
+                        <td><span class="fw-bold text-cyan">{{ job.min_cgpa }}</span></td>
+                        <td class="text-muted small">{{ job.deadline }}</td>
+                        <td>
+                            <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 fs-6">
+                                {{ job.applications | length }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if job.status == 'active' %}
+                                <span class="badge bg-success text-dark fw-bold">ACTIVE</span>
+                            {% else %}
+                                <span class="badge bg-secondary text-light">CLOSED</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form action="{{ url_for('toggle_job_status', job_id=job.id) }}" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-sm {% if job.status == 'active' %}btn-outline-danger{% else %}btn-outline-success{% endif %}">
+                                    {% if job.status == 'active' %}Close Drive{% else %}Activate Drive{% endif %}
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">No job listings found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

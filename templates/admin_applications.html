@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Candidate Applications - CPMS{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+    <div>
+        <h2 class="fw-extrabold text-white mb-1">
+            <i class="fa-solid fa-file-invoice text-indigo me-2"></i> Candidate Applications Review
+        </h2>
+        <p class="text-muted small mb-0">Evaluate student applications, update recruitment stages, and record interviewer feedback.</p>
+    </div>
+    <div>
+        <input type="text" id="tableSearchInput" class="form-control form-control-custom" placeholder="Search applicant, job, status..." style="min-width: 280px;">
+    </div>
+</div>
+
+<div class="glass-card p-4">
+    <div class="custom-table-container">
+        <table class="custom-table searchable-table">
+            <thead>
+                <tr>
+                    <th>App ID</th>
+                    <th>Candidate Student</th>
+                    <th>Academic Details</th>
+                    <th>Applied Job Position</th>
+                    <th>Applied Date</th>
+                    <th>Status</th>
+                    <th>Remarks</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in applications %}
+                    <tr>
+                        <td><span class="font-monospace text-muted">#APP-{{ app.id }}</span></td>
+                        <td>
+                            <strong class="text-white d-block">{{ app.student.user.name }}</strong>
+                            <small class="text-muted"><i class="fa-solid fa-envelope me-1"></i> {{ app.student.user.email }}</small>
+                        </td>
+                        <td>
+                            <div class="small">
+                                <span class="d-block text-white">{{ app.student.branch }}</span>
+                                <span class="text-indigo fw-bold">CGPA: {{ app.student.cgpa }}</span> |
+                                <span class="text-muted">Roll: {{ app.student.roll_no }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <strong class="text-indigo d-block">{{ app.job.title }}</strong>
+                            <small class="text-muted"><i class="fa-solid fa-building me-1"></i> {{ app.job.company.company_name }}</small>
+                        </td>
+                        <td class="text-muted small">{{ app.applied_at.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            {% if app.status == 'Selected' %}
+                                <span class="badge-status badge-selected"><i class="fa-solid fa-circle-check"></i> Selected</span>
+                            {% elif app.status == 'Shortlisted' %}
+                                <span class="badge-status badge-shortlisted"><i class="fa-solid fa-clock"></i> Shortlisted</span>
+                            {% elif app.status == 'Rejected' %}
+                                <span class="badge-status badge-rejected"><i class="fa-solid fa-xmark-circle"></i> Rejected</span>
+                            {% else %}
+                                <span class="badge-status badge-applied"><i class="fa-solid fa-paper-plane"></i> Applied</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="small text-muted d-inline-block text-truncate" style="max-width: 160px;" title="{{ app.remarks }}">
+                                {{ app.remarks or 'No remarks recorded' }}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-primary-custom" data-bs-toggle="modal" data-bs-target="#updateStatusModal" data-app-id="{{ app.id }}" data-status="{{ app.status }}" data-remarks="{{ app.remarks or '' }}">
+                                Update Status
+                            </button>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">No student applications submitted yet.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Update Status Modal -->
+<div class="modal fade" id="updateStatusModal" tabindex="-1" aria-labelledby="updateStatusModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-content-custom">
+            <form id="updateStatusForm" method="POST">
+                <div class="modal-header modal-header-custom">
+                    <h5 class="modal-title fw-bold text-white" id="updateStatusModalLabel">Update Candidate Status</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label for="modal-status-select" class="form-label form-label-custom">Select New Status</label>
+                        <select class="form-select form-select-custom" id="modal-status-select" name="status" required>
+                            <option value="Applied">Applied</option>
+                            <option value="Shortlisted">Shortlisted</option>
+                            <option value="Selected">Selected / Placed</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="modal-remarks-input" class="form-label form-label-custom">Remarks / Interview Notes</label>
+                        <textarea class="form-control form-control-custom" id="modal-remarks-input" name="remarks" rows="3" placeholder="Add candidate feedback or assessment results..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer modal-footer-custom">
+                    <button type="button" class="btn btn-secondary-custom" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary-custom">Save Decision</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

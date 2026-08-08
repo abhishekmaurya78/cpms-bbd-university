@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - BBD Placement Cell{% endblock %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 600px;">
+    <div class="glass-card p-4 p-lg-5 animate-fade-in">
+        <h2 class="text-center text-white fw-bold mb-4">
+            <i class="fa-solid fa-user-plus me-2"></i> Create Your Account
+        </h2>
+        <p class="text-center text-muted mb-4">Join BBD University's Campus Placement Management System</p>
+
+        <form method="POST">
+            <!-- Role Selection -->
+            <div class="mb-3">
+                <label class="form-label text-white fw-semibold">I am registering as a:</label>
+                <select name="role" class="form-select bg-dark text-white border-secondary" required>
+                    <option value="" disabled selected>Select your role</option>
+                    <option value="student">Student</option>
+                    <option value="company">Company</option>
+                    <option value="admin">College Admin</option>
+                </select>
+            </div>
+
+            <!-- Common Details -->
+            <div class="mb-3">
+                <label class="form-label text-white fw-semibold">Full Name / Company Name</label>
+                <input type="text" name="name" class="form-control bg-dark text-white border-secondary"
+                    placeholder="Enter your name or company name" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label text-white fw-semibold">Email Address</label>
+                <input type="email" name="email" class="form-control bg-dark text-white border-secondary"
+                    placeholder="you@example.com" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label text-white fw-semibold">Phone Number</label>
+                <input type="text" name="phone" class="form-control bg-dark text-white border-secondary"
+                    placeholder="+91 9876543210">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label text-white fw-semibold">Password</label>
+                <input type="password" name="password" class="form-control bg-dark text-white border-secondary"
+                    placeholder="Create a strong password" required>
+            </div>
+
+            <!-- Student Specific Fields -->
+            <div id="student_fields" style="display: none;">
+                <hr class="border-secondary">
+                <h6 class="text-white fw-semibold mb-3">📚 Student Academic Details</h6>
+                <div class="mb-3">
+                    <label class="form-label text-white">Roll Number</label>
+                    <input type="text" name="roll_no" class="form-control bg-dark text-white border-secondary"
+                        placeholder="e.g. BBD2026101">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-white">Branch</label>
+                    <input type="text" name="branch" class="form-control bg-dark text-white border-secondary"
+                        placeholder="e.g. Computer Science & Engineering">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-white">Semester</label>
+                    <input type="text" name="semester" class="form-control bg-dark text-white border-secondary"
+                        placeholder="e.g. 8th Semester">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-white">CGPA</label>
+                    <input type="number" step="0.1" name="cgpa" class="form-control bg-dark text-white border-secondary"
+                        placeholder="e.g. 8.5">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-white">Passing Year</label>
+                    <input type="number" name="passing_year" class="form-control bg-dark text-white border-secondary"
+                        placeholder="e.g. 2026">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-white">Skills (comma separated)</label>
+                    <input type="text" name="skills" class="form-control bg-dark text-white border-secondary"
+                        placeholder="Python, SQL, React, Web Development">
+                </div>
+            </div>
+
+            <!-- Company Specific Fields -->
+            <div id="company_fields" style="display: none;">
+                <hr class="border-secondary">
+                <h6 class="text-white fw-semibold mb-3">🏢 Company Profile Details</h6>
+                <div class="mb-3">
+                    <label class="form-label text-white">Industry</label>
+                    <input type="text" name="industry" class="form-control bg-dark text-white border-secondary"
+                        placeholder="e.g. IT Services & Software Development">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-white">Location</label>
+                    <input type="text" name="location" class="form-control bg-dark text-white border-secondary"
+                        placeholder="e.g. Noida / Bengaluru, India">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-white">Website (Optional)</label>
+                    <input type="text" name="website" class="form-control bg-dark text-white border-secondary"
+                        placeholder="https://example.com">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-white">Company Description (Optional)</label>
+                    <textarea name="description" class="form-control bg-dark text-white border-secondary" rows="2"
+                        placeholder="Brief description about your company"></textarea>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary-custom w-100 mt-3">
+                <i class="fa-solid fa-user-plus me-1"></i> Register Now
+            </button>
+        </form>
+
+        <div class="text-center mt-4">
+            <p class="text-muted small mb-0">Already have an account? <a href="{{ url_for('login') }}"
+                    class="text-indigo fw-bold text-decoration-none">Login here</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const roleSelect = document.querySelector('select[name="role"]');
+        const studentFields = document.getElementById('student_fields');
+        const companyFields = document.getElementById('company_fields');
+
+        function toggleRoleFields() {
+            const role = roleSelect ? roleSelect.value : '';
+            if (studentFields) {
+                studentFields.style.display = (role === 'student') ? 'block' : 'none';
+            }
+            if (companyFields) {
+                companyFields.style.display = (role === 'company') ? 'block' : 'none';
+            }
+        }
+
+        if (roleSelect) {
+            roleSelect.addEventListener('change', toggleRoleFields);
+            toggleRoleFields(); // Execute immediately on load
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Browse Placement Drives - CPMS{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+    <div>
+        <h2 class="fw-extrabold text-white mb-1">
+            <i class="fa-solid fa-briefcase text-indigo me-2"></i> Campus Placement Opportunities
+        </h2>
+        <p class="text-muted small mb-0">Explore active recruitment drives posted by top corporate partners.</p>
+    </div>
+
+    <!-- Search Form -->
+    <form action="{{ url_for('jobs') }}" method="GET" class="d-flex gap-2" style="min-width: 320px;">
+        <input type="text" name="search" class="form-control form-control-custom" placeholder="Search title or location..." value="{{ request.args.get('search', '') }}">
+        <button type="submit" class="btn btn-primary-custom text-nowrap">
+            <i class="fa-solid fa-magnifying-glass me-1"></i> Search
+        </button>
+    </form>
+</div>
+
+<div class="row g-4">
+    {% for job in jobs %}
+        <div class="col-lg-6">
+            <div class="glass-card glass-card-interactive h-100 p-4 d-flex flex-direction-column justify-content-between">
+                <div>
+                    <!-- Header -->
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <span class="badge bg-indigo-subtle text-indigo px-2.5 py-1 rounded-pill small fw-semibold mb-2 d-inline-block">
+                                <i class="fa-solid fa-building me-1"></i> {{ job.company.company_name }}
+                            </span>
+                            <h4 class="fw-bold text-white mb-1">{{ job.title }}</h4>
+                        </div>
+                        <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 fs-6 font-monospace px-3 py-2">
+                            {{ job.salary_package }}
+                        </span>
+                    </div>
+
+                    <!-- Meta Tags -->
+                    <div class="d-flex flex-wrap gap-3 text-muted small mb-3">
+                        <span><i class="fa-solid fa-location-dot text-cyan me-1"></i> {{ job.location }}</span>
+                        <span><i class="fa-solid fa-graduation-cap text-warning me-1"></i> Min CGPA: <strong>{{ job.min_cgpa }}</strong></span>
+                        <span><i class="fa-solid fa-calendar-xmark text-danger me-1"></i> Deadline: {{ job.deadline }}</span>
+                    </div>
+
+                    <!-- Role Description -->
+                    <p class="text-muted small mb-3">
+                        {{ job.role_description }}
+                    </p>
+
+                    <!-- Requirements -->
+                    <div class="mb-4">
+                        <small class="text-indigo fw-semibold d-block mb-1">Requirements & Skills:</small>
+                        <p class="text-muted small mb-0 bg-dark bg-opacity-40 p-2.5 rounded-3 border border-secondary border-opacity-25">
+                            {{ job.requirements }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Action Footer -->
+                <div class="pt-3 border-top border-secondary border-opacity-25 d-flex justify-content-between align-items-center">
+                    <div>
+                        {% if student %}
+                            {% if student.cgpa >= job.min_cgpa %}
+                                <span class="badge bg-success bg-opacity-15 text-success small"><i class="fa-solid fa-circle-check"></i> Eligible</span>
+                            {% else %}
+                                <span class="badge bg-danger bg-opacity-15 text-danger small"><i class="fa-solid fa-circle-xmark"></i> Below CGPA Limit ({{ job.min_cgpa }})</span>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        {% if current_user.is_authenticated and current_user.role == 'student' %}
+                            {% if job.id in applied_job_ids %}
+                                <button class="btn btn-sm btn-secondary-custom" disabled>
+                                    <i class="fa-solid fa-check me-1"></i> Applied
+                                </button>
+                            {% elif student and student.cgpa < job.min_cgpa %}
+                                <button class="btn btn-sm btn-outline-secondary" disabled title="CGPA criteria not met">
+                                    Ineligible
+                                </button>
+                            {% else %}
+                                <form action="{{ url_for('apply_job', job_id=job.id) }}" method="POST" class="d-inline">
+                                    <button type="submit" class="btn btn-primary-custom px-4">
+                                        <i class="fa-solid fa-paper-plane me-1"></i> Apply Now
+                                    </button>
+                                </form>
+                            {% endif %}
+                        {% elif not current_user.is_authenticated %}
+                            <a href="{{ url_for('login') }}" class="btn btn-outline-custom">
+                                Login to Apply
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="col-12 py-5 text-center">
+            <div class="glass-card p-5">
+                <i class="fa-solid fa-folder-open text-muted fs-1 mb-3"></i>
+                <h5 class="text-white fw-bold">No Active Jobs Found</h5>
+                <p class="text-muted small">Try searching for a different keyword or check back later.</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Campus Placement Management System{% endblock %} - BBD University</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Chart.js for Admin Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom Style CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+    <!-- Header Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-cpms sticky-top">
+        <div class="container-fluid px-lg-5">
+            <a class="navbar-brand navbar-brand-custom d-flex align-items-center" href="{{ url_for('index') }}">
+                <span class="navbar-brand-icon">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </span>
+                <span>CPMS <span class="fs-6 fw-normal text-muted ms-1">BBD University</span></span>
+            </a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
+                aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom {% if request.endpoint == 'index' %}active{% endif %}"
+                            href="{{ url_for('index') }}">
+                            <i class="fa-solid fa-house"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom {% if request.endpoint == 'jobs' %}active{% endif %}"
+                            href="{{ url_for('jobs') }}">
+                            <i class="fa-solid fa-briefcase"></i> Browse Jobs
+                        </a>
+                    </li>
+
+                    {% if current_user.is_authenticated %}
+                    <!-- SUPER ADMIN LINK -->
+                    {% if current_user.email == 'abhishekmaurya53957@gmail.com' %}
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom text-warning fw-bold {% if request.endpoint == 'superadmin_dashboard' %}active{% endif %}"
+                            href="{{ url_for('superadmin_dashboard') }}">
+                            <i class="fa-solid fa-crown me-1"></i> Super Admin
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% if current_user.role == 'admin' %}
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom {% if request.endpoint == 'admin_dashboard' %}active{% endif %}"
+                            href="{{ url_for('admin_dashboard') }}">
+                            <i class="fa-solid fa-chart-line"></i> Admin Panel
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom {% if request.endpoint == 'admin_students' %}active{% endif %}"
+                            href="{{ url_for('admin_students') }}">
+                            <i class="fa-solid fa-users-gear"></i> Students
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom {% if request.endpoint == 'admin_jobs' %}active{% endif %}"
+                            href="{{ url_for('admin_jobs') }}">
+                            <i class="fa-solid fa-list-check"></i> Manage Jobs
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom {% if request.endpoint == 'admin_applications' %}active{% endif %}"
+                            href="{{ url_for('admin_applications') }}">
+                            <i class="fa-solid fa-file-invoice"></i> Applications
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom {% if request.endpoint == 'post_job' %}active{% endif %}"
+                            href="{{ url_for('post_job') }}">
+                            <i class="fa-solid fa-plus-circle"></i> Post Job
+                        </a>
+                    </li>
+                    {% elif current_user.role == 'student' %}
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom {% if request.endpoint == 'student_dashboard' %}active{% endif %}"
+                            href="{{ url_for('student_dashboard') }}">
+                            <i class="fa-solid fa-user-graduate"></i> My Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom {% if request.endpoint == 'my_applications' %}active{% endif %}"
+                            href="{{ url_for('my_applications') }}">
+                            <i class="fa-solid fa-paper-plane"></i> My Applications
+                        </a>
+                    </li>
+                    {% elif current_user.role == 'company' %}
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom {% if request.endpoint == 'company_dashboard' %}active{% endif %}"
+                            href="{{ url_for('company_dashboard') }}">
+                            <i class="fa-solid fa-building"></i> Company Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom {% if request.endpoint == 'admin_applications' %}active{% endif %}"
+                            href="{{ url_for('admin_applications') }}">
+                            <i class="fa-solid fa-users"></i> Candidate Applications
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom {% if request.endpoint == 'post_job' %}active{% endif %}"
+                            href="{{ url_for('post_job') }}">
+                            <i class="fa-solid fa-plus-circle"></i> Post New Job
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    <li class="nav-item ms-lg-3 d-flex align-items-center gap-2 mt-2 mt-lg-0">
+                        <span class="user-badge">
+                            <i class="fa-solid fa-user-circle me-1"></i> {{ current_user.name }} ({{ current_user.role |
+                            capitalize }})
+                        </span>
+                        <a href="{{ url_for('logout') }}" class="btn btn-sm btn-outline-danger rounded-pill px-3 ms-1"
+                            title="Logout">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item ms-lg-2">
+                        <a class="nav-link nav-link-custom {% if request.endpoint == 'login' %}active{% endif %}"
+                            href="{{ url_for('login') }}">
+                            <i class="fa-solid fa-right-to-bracket"></i> Sign In
+                        </a>
+                    </li>
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-primary-custom text-white btn-sm px-3" href="{{ url_for('register') }}">
+                            <i class="fa-solid fa-user-plus"></i> Register
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="app-content">
+        <div class="container-fluid px-lg-5">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show border-0 shadow-sm mb-4 animate-fade-in"
+                        role="alert">
+                        <div class="d-flex align-items-center gap-2">
+                            {% if category == 'success' %}
+                            <i class="fa-solid fa-circle-check fs-5"></i>
+                            {% elif category == 'danger' or category == 'error' %}
+                            <i class="fa-solid fa-circle-exclamation fs-5"></i>
+                            {% elif category == 'warning' %}
+                            <i class="fa-solid fa-triangle-exclamation fs-5"></i>
+                            {% else %}
+                            <i class="fa-solid fa-circle-info fs-5"></i>
+                            {% endif %}
+                            <div>{{ message }}</div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-cpms text-center py-3">
+        <div class="container-fluid px-lg-5">
+            <p class="mb-0 text-muted small">
+                <i class="fa-solid fa-graduation-cap text-primary me-2"></i> BBD University - Campus Placement Cell 2026
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom Main JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>
