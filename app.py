@@ -677,5 +677,8 @@ def internal_server_error(e):
 
 # Main entry point
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+        print("Tables created!")
     init_db()
     app.run(debug=True, port=5000)
