@@ -377,15 +377,22 @@ def superadmin_dashboard():
     if current_user.email != 'abhishekmaurya53957@gmail.com':
         flash('Access Denied! You are not authorized to view this page.', 'danger')
         return redirect(url_for('index'))
+    
     total_students = StudentProfile.query.count()
     total_companies = CompanyProfile.query.count()
     total_jobs = Job.query.count()
+    total_applications = Application.query.count()
     
-    return render_template('superadmin_dashboard.html', 
+    admins = User.query.filter_by(role='admin').all()
+    all_users = User.query.all()
+    
+    return render_template('superadmin_dashboard.html',
                            total_students=total_students,
                            total_companies=total_companies,
-                           total_jobs=total_jobs)
-
+                           total_jobs=total_jobs,
+                           total_applications=total_applications,
+                           admins=admins,
+                           all_users=all_users)
 # Admin dashboard route
 @app.route('/admin/dashboard')
 @login_required
