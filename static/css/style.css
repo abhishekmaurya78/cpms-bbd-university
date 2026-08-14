@@ -1,13 +1,9 @@
-/* ==========================================================================
-   Campus Placement Management System (CPMS) - Master Styling
-   ========================================================================== */
-
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 :root {
   --font-primary: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-  /* Color Palette - Vibrant Slate & Indigo Theme */
+  /* Colors */
   --bg-primary: #0b0f19;
   --bg-secondary: #111827;
   --bg-card: rgba(17, 24, 39, 0.75);
@@ -47,7 +43,7 @@
   --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.25);
 }
 
-/* Base resets & typography */
+/* Base resets */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -62,7 +58,7 @@ body {
   display: flex;
   flex-direction: column;
   line-height: 1.6;
-  background-image: 
+  background-image:
     radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.12) 0%, transparent 40%),
     radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.1) 0%, transparent 40%);
   background-attachment: fixed;
@@ -75,7 +71,7 @@ body {
   padding-bottom: 3rem;
 }
 
-/* Navbar Glassmorphism */
+/* Navbar */
 .navbar-cpms {
   background: rgba(11, 15, 25, 0.85);
   backdrop-filter: blur(16px);
@@ -173,24 +169,44 @@ body {
   font-size: 1.6rem;
 }
 
-.stat-icon-indigo { background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); }
-.stat-icon-cyan   { background: rgba(6, 182, 212, 0.15); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.3); }
-.stat-icon-green  { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
-.stat-icon-amber  { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+.stat-icon-indigo {
+  background: rgba(99, 102, 241, 0.15);
+  color: #818cf8;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.stat-icon-cyan {
+  background: rgba(6, 182, 212, 0.15);
+  color: #22d3ee;
+  border: 1px solid rgba(6, 182, 212, 0.3);
+}
+
+.stat-icon-green {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.stat-icon-amber {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
 
 .stat-number {
-  font-size: 1.85rem;
-  font-weight: 800;
-  line-height: 1.1;
-  color: var(--text-main);
+  font-size: 2.5rem !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  line-height: 1.2 !important;
 }
 
 .stat-label {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  color: #d1d5db !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  margin-top: 6px !important;
 }
 
 /* Buttons */
@@ -287,7 +303,7 @@ body {
   border: 1px solid var(--status-rejected-border);
 }
 
-/* Custom Forms */
+/* Forms */
 .form-control-custom,
 .form-select-custom {
   background: rgba(15, 23, 42, 0.8) !important;
@@ -314,7 +330,7 @@ body {
   margin-bottom: 0.4rem;
 }
 
-/* Custom Table */
+/* Tables */
 .custom-table-container {
   overflow-x: auto;
   border-radius: 12px;
@@ -403,15 +419,22 @@ body {
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-fade-in {
   animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Placement Cell Seal / Badge Effect */
+/* Seal Badge */
 .placement-seal-badge {
   display: inline-flex;
   align-items: center;
@@ -440,9 +463,9 @@ body {
     box-shadow: 0 0 8px rgba(99, 102, 241, 0.2);
     border-color: rgba(99, 102, 241, 0.4);
   }
+
   100% {
     box-shadow: 0 0 16px rgba(99, 102, 241, 0.6);
     border-color: rgba(6, 182, 212, 0.6);
   }
 }
-

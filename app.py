@@ -164,6 +164,7 @@ def init_db():
             db.create_all()
             print(f"Active database: SQLite ({SQLITE_URI})")
 
+        # Create Super Admin account (only if not exists)
         super_admin = User.query.filter_by(email=SUPERADMIN_EMAIL).first()
         if not super_admin:
             super_admin = User(
@@ -302,6 +303,18 @@ def register():
         if role == 'superadmin':
             role = 'student'
 
+        # Student domain check
+        if role == 'student':
+            if not (email.endswith('@bbduniversity.edu.in') or email.endswith('@bbdu.ac.in')):
+                flash('Students must register using a valid BBD University email address (@bbduniversity.edu.in or @bbdu.ac.in).', 'danger')
+                return redirect(url_for('register'))
+
+        # Company domain check
+        if role == 'company':
+            if '@gmail.com' in email or '@yahoo.com' in email or '@outlook.com' in email or '@hotmail.com' in email:
+                flash('Companies must register using a valid official company email address (e.g., name@companyname.com). Personal emails are not allowed.', 'danger')
+                return redirect(url_for('register'))
+
         new_user = User(email=email, role=role, name=name, phone=phone)
         new_user.set_password(password)
         db.session.add(new_user)
@@ -393,6 +406,7 @@ def superadmin_dashboard():
                            total_applications=total_applications,
                            admins=admins,
                            all_users=all_users)
+
 # Admin dashboard route
 @app.route('/admin/dashboard')
 @login_required
